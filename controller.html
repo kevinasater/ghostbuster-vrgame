@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+      <meta http-equiv="Cache-Control" content="no-cache">
+      <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+      <!-- <script src="src/bundle.js"></script> -->
+      <script src="src/components/raycaster-autorefresh.js"></script>
+      <!-- <script src="src/components/shoot-controls.js"></script>
+      <script src="src/components/weapon.js"></script>
+      <script src="src/components/gun.js"></script>
+      <script src="src/components/json-model.js"></script>
+      <script src="src/components/headset.js"></script>
+      <script src="src/bullets/player.js"></script> -->
+     <!--  <script src="https://unpkg.com/aframe-particle-system-component@1.0.10/dist/aframe-particle-system-component.js"></script>
+		<script src="https://unpkg.com/aframe-physics-system@2.1.0/dist/aframe-physics-system.js"></script>
+		<script src="https://unpkg.com/aframe-animation-component@3.2.5/dist/aframe-animation-component.js"></script> 
+		<script src="https://unpkg.com/aframe-gradient-sky@1.0.4/dist/gradientsky.js"></script> -->
+		<script src="https://unpkg.com/aframe-particle-system-component@1.0.10/dist/aframe-particle-system-component.js"></script>
+      <script src="https://unpkg.com/aframe-physics-system@2.1.0/dist/aframe-physics-system.js"></script>
+      <script src="https://unpkg.com/aframe-animation-component@3.2.5/dist/aframe-animation-component.js"></script>
+      
+      
+      <!-- <script src="build/build.js"></script> -->
+      <script src="build/build.js"></script>
+  </head>
+
+  <body>
+    <script>
+      AFRAME.registerComponent('click-listener', {
+        init: function() {
+          var clicked = false;
+          this.el.addEventListener('click', function(evt) {
+            console.log('Clicked');
+            var textField = document.querySelector("#textField");
+            clicked = !clicked;
+            if (clicked) {
+              //pos = camera.getAttribute("position").toString();
+              textField.setAttribute('text', {"value": "Clicked"});
+            }
+            else {
+              textField.setAttribute('text', {"value": "Unclicked"});
+            }
+            
+          });
+        }
+      });
+      </script>
+    <a-scene physics="iterations: 20">
+     
+      <a-assets>
+        <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
+        <a-asset-item id="ghost" src="assets/models/Ghost.gltf"></a-asset-item>
+        <a-asset-image src="assets/images/gun_diff.jpg" crossOrigin="anonymous"></a-asset-image>
+				<a-asset-image src="assets/images/gun_spec.jpg" crossOrigin="anonymous"></a-asset-image>
+				<a-asset-image src="assets/images/gun_normal.png" crossOrigin="anonymous"></a-asset-image>
+				<a-asset-image src="assets/images/decal0.png" crossOrigin="anonymous"></a-asset-image>
+				
+				<a-asset-item id="playerBullet" src="assets/models/player-bullet.json"></a-asset-item>
+				
+				<img id="bulletDecal" src="assets/images/decal0.png" crossOrigin="anonymous">
+			
+      </a-assets>
+      <a-sky src="#skyTexture" theta-length="90" radius="30"></a-sky>
+
+      <!-- Controller code -->
+      <!-- <a-entity gearvr-controls></a-entity> -->
+      <!-- <a-entity laser-controls="hand: left"></a-entity>
+      <a-entity laser-controls="hand: right"></a-entity> -->
+      <a-entity light="type: ambient"></a-entity>
+      <a-entity id="leftHand" shoot-controls="hand: left" weapon shoot></a-entity>
+		  <a-entity id="rightHandPivot">
+			  <a-entity id="rightHand" shoot-controls="hand: right" weapon shoot></a-entity>
+      </a-entity>
+
+      <a-entity id="player"
+				camera="userHeight: 1.6"
+				wasd-controls
+				look-controls
+				restrict-position
+				shoot="direction: 0 0 -1; spaceKeyEnabled: true">
+			</a-entity>
+      <!-- <a-camera id="camera" position="0 1.6 0"></a-camera> -->
+        <a-text id="textField" position="0 5 -2" value="Hello World"></a-text>
+        <a-entity id="ground" static-body geometry="primitive: cylinder; radius: 30; height: 0.1" 
+                              position="0 0 0" 
+                              material="shader: flat; color: #424949">
+        </a-entity>
+         
+        <a-entity gltf-model="#ghost" id="ghost"  static-body enemy cursor-listener position="0 1.8 -10"></a-entity>
+        
+    </a-scene>
+  </body>
+</html>
