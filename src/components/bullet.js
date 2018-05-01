@@ -1,4 +1,4 @@
-c/* globals AFRAME ABLAST THREE */
+/* globals AFRAME ABLAST THREE */
 AFRAME.registerComponent('bullet', {
   schema: {
     name: { default: '' },

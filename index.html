@@ -16,7 +16,7 @@
     </head>
 
   <body>
-    <a-scene game-manager="numberEnemies: 10" raycaster-autorefresh physics>
+    <a-scene game-manager="numberEnemies: 10" raycaster-autorefresh>
             
       <a-assets>
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
@@ -38,9 +38,8 @@
       <a-entity gearvr-controls="hand: right; model: true"></a-entity> -->
       <a-entity id="leftHand" shoot-controls="hand: left" weapon shoot></a-entity>
 		  <a-entity id="rightHandPivot">
-			  <a-entity id="rightHand" shoot-controls="hand: right" weapon shoot></a-entity>
-      </a-entity>
-
+			<a-entity id="rightHand" shoot-controls="hand: right" weapon shoot></a-entity>
+		  </a-entity>
       <a-sky src="#skyTexture" theta-length="90" radius="30"></a-sky>
       <a-camera>
         <!-- <a-cursor downEvents="triggerdown" upEvents="triggerup"></a-cursor> -->
