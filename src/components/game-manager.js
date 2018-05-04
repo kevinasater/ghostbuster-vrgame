@@ -17,6 +17,7 @@ var GameManagerUtils = {
         newEnemy.setAttribute('gltf-model', '#ghost');
         //newEnemy.setAttribute('cursor-listener', '');
         newEnemy.setAttribute('enemy', '');
+        newEnemy.setAttribute('static-body',  '');
         
         // TODO: Assign position.
         var position = GameManagerUtils.chooseRandomPosition();
