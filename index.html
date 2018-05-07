@@ -41,14 +41,23 @@
 			<a-entity id="rightHand" shoot-controls="hand: right" weapon shoot></a-entity>
 		  </a-entity>
       <a-sky src="#skyTexture" theta-length="90" radius="30"></a-sky>
-      <a-camera>
+      <!-- Original camera -->
+      <!-- <a-camera> -->
         <!-- <a-cursor downEvents="triggerdown" upEvents="triggerup"></a-cursor> -->
-        <a-entity cursor="downEvents: triggerdown touchpaddown; upEvents: triggerup touchpadup" 
+      <!--  <a-entity cursor="downEvents: triggerdown touchpaddown; upEvents: triggerup touchpadup" 
                   geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.05"
                   material="color: blue; shader: flat"
                   position="0 0 -1">
         </a-entity>
-        </a-camera>
+        </a-camera> -->
+    
+     <a-entity id="player"
+				camera="userHeight: 1.6"
+				wasd-controls
+				look-controls
+				restrict-position
+				shoot="direction: 0 0 -1; spaceKeyEnabled: true">
+			</a-entity>
         <a-entity id="ground" geometry="primitive: cylinder; radius: 30; height: 0.1" 
                               position="0 0 0" 
                               material="shader: flat; color: #424949">
