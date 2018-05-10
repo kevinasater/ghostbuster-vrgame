@@ -16,7 +16,8 @@
     </head>
 
   <body>
-    <a-scene physics="iterations: 20" game-manager="numberEnemies: 10">
+    <!-- <a-scene physics="iterations: 20" game-manager="numberEnemies: 10"> -->
+    <a-scene physices="iterations: 20">
             
       <a-assets>
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
@@ -67,6 +68,9 @@
         <a-entity gltf-model="#ghost" cursor-listener position="3 1.6 -10"></a-entity>
         <a-entity gltf-model="#ghost" cursor-listener position="5 1.6 -10"></a-entity>
         -->
+      
+      <a-entity gltf-model="#ghost" id="ghost"  static-body enemy cursor-listener position="0 1.8 -10"></a-entity>
+        
     </a-scene>
   </body>
 </html>
