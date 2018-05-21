@@ -1,9 +1,12 @@
 window.ABLAST = {};
+window.AFPS = {};
+
 
 require('./a-asset-image.js');
 
 require('./components/bullet.js');
 require('./components/collision-helper.js');
+
 
 // gun.js and weapon.js are causing the Ghost models to become dark silhouettes.
 require('./components/gun.js');
@@ -21,3 +24,5 @@ require('./lib/poolhelper.js');
 require('./lib/utils.js');
 
 require('./systems/bullet.js');  
+
+require('./components/game-manager.js');

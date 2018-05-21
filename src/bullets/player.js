@@ -39,9 +39,17 @@ ABLAST.registerBullet(
 			e.detail.contact;    // Stats about the collision (CANNON.ContactEquation).
 			e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
 			  
-			setTimeout(function(){el.components.bullet.hitObject(null, null);}, 0);
-			//console.log('reset bullet');
-		  
+			//setTimeout(function(){el.components.bullet.hitObject(null, null);}, 0);
+      setTimeout(function(){el.components.bullet.hitObject(e.detail.body.el['type'], null);}, 0);
+			
+      //console.log('reset bullet');
+      var enemy = e.detail.body.el.components.enemy;
+      console.log(e.detail.body.el.components);
+      console.log(enemy);
+      if (e.detail.body.el.components.enemy != null) {
+        console.log('Hit an enemy');
+        e.detail.body.el.components.enemy.hit();
+      } 
 		});
       this.trail = null;
       var self = this;
@@ -53,7 +61,7 @@ ABLAST.registerBullet(
       });
     },
     reset: function () {
-		console.log('resetting bullet');
+		//console.log('resetting bullet');
       var el = this.el;
       el.setAttribute('scale', {x: 0.2, y: 0.2, z: 0.2});
       if (this.trail) {

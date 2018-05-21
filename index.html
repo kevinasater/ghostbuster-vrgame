@@ -6,8 +6,8 @@
       <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
       <!-- <script src="https://unpkg.com/aframe-animation-component@4.0.0-beta8/dist/aframe-animation-component.min.js"></script>-->
       <script src="src/components/cursor-listener.js?v=0.12"></script>
-      <script src="src/components/raycaster-autorefresh.js"></script>
-      <script src="src/components/game-manager.js?v=0.19"></script>
+      <script src="src/components/raycaster-autorefresh.js"></script> 
+      <!-- <script src="src/components/game-manager.js?v=0.19"></script> -->
       <script src="https://unpkg.com/aframe-particle-system-component@1.0.10/dist/aframe-particle-system-component.js"></script>
       <script src="https://unpkg.com/aframe-physics-system@2.1.0/dist/aframe-physics-system.js"></script>
       <script src="https://unpkg.com/aframe-animation-component@3.2.5/dist/aframe-animation-component.js"></script>
@@ -16,8 +16,8 @@
     </head>
 
   <body>
-    <!-- <a-scene physics="iterations: 20" game-manager="numberEnemies: 10"> -->
-    <a-scene physics="iterations: 20">
+    <a-scene physics="iterations: 20" game-manager="numberEnemies: 5">
+    <!-- <a-scene physics="iterations: 20"> -->
             
       <a-assets>
         <img id="skyTexture" src="https://cdn.aframe.io/a-painter/images/sky.jpg" crossorigin="anonymous">
@@ -59,7 +59,8 @@
 				restrict-position
 				shoot="direction: 0 0 -1; spaceKeyEnabled: true">
 			</a-entity>
-        <a-entity id="ground" geometry="primitive: cylinder; radius: 30; height: 0.1" 
+        <a-entity id="ground" type="background" static-body
+        geometry="primitive: cylinder; radius: 30; height: 0.1" 
                               position="0 0 0" 
                               material="shader: flat; color: #424949">
         </a-entity>
@@ -69,8 +70,8 @@
         <a-entity gltf-model="#ghost" cursor-listener position="5 1.6 -10"></a-entity>
         -->
       
-      <a-entity gltf-model="#ghost" id="ghost"  static-body enemy cursor-listener position="0 1.8 -10"></a-entity>
-      
+      <!-- <a-entity gltf-model="#ghost" id="ghost"  static-body enemy cursor-listener position="0 1.8 -10"></a-entity>
+      -->
     </a-scene>
   </body>
 </html>

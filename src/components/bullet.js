@@ -39,10 +39,15 @@ AFRAME.registerComponent('bullet', {
   },
 
   hitObject: function (type, data) {
-    console.log('hitObject');
+    //console.log('hitObject');
 	if(this.hit==true) return;
     this.bullet.definition.onHit.call(this);
+    //console.log("type=", type);
+    //console.log("Setting hit to true.");
     this.hit = true;
+    if (type === 'enemy') {
+      console.log('Hit enemy');
+    }
     /*if (this.data.owner === 'enemy') {
       this.el.emit('player-hit');
       document.getElementById('hurtSound').components.sound.playSound();
@@ -74,6 +79,7 @@ AFRAME.registerComponent('bullet', {
   },
 
   resetBullet: function () {
+    //console.log('resetBullet');
     this.hit = false;
     this.bullet.definition.reset.call(this);
     this.initTime = null;
@@ -91,8 +97,32 @@ AFRAME.registerComponent('bullet', {
     //var position = new THREE.Vector3();
     //var direction = new THREE.Vector3();
     return function tick (time, delta) {
+      console.log('bullet.tick');
+      // 5/13/2018: Check for collisions.
+      var collisionHelper = this.el.getAttribute('collision-helper');
+      if (!collisionHelper) { return; }
 
-      /*if (!this.initTime) {this.initTime = time;}
+      var bulletRadius = collisionHelper.radius;
+      
+      var enemies = AFPS.enemies;
+      console.log("Checking for collisions with ", enemies);
+      for (var i = 0; i < enemies.length; i++) {
+        console.log("Checking enemy ", i);
+        var enemy = enemies[i];
+        var helper = enemy.getAttribute('collision-helper');
+        if (!helper) continue;
+        var radius = helper.radius;
+        this.temps.position.copy(this.el.getAttribute('position'));
+        if (this.temps.position.distanceTo(enemy.object3D.position) < radius + bulletRadius) {
+          enemy.emit('hit');
+          this.hitObject('enemy', enemy);
+          return;
+        }
+      }
+    }
+
+      
+      /* if (!this.initTime) {this.initTime = time;}
 
       this.bullet.definition.tick.call(this, time, delta);
 
@@ -206,6 +236,5 @@ AFRAME.registerComponent('bullet', {
           }
         });
       }*/
-    };
-  })()
-});
+    })
+  });

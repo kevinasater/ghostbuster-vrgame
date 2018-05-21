@@ -64,9 +64,17 @@ ABLAST.registerBullet(
 			e.detail.contact;    // Stats about the collision (CANNON.ContactEquation).
 			e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
 			  
-			setTimeout(function(){el.components.bullet.hitObject(null, null);}, 0);
-			//console.log('reset bullet');
-		  
+			//setTimeout(function(){el.components.bullet.hitObject(null, null);}, 0);
+      setTimeout(function(){el.components.bullet.hitObject(e.detail.body.el['type'], null);}, 0);
+			
+      //console.log('reset bullet');
+      var enemy = e.detail.body.el.components.enemy;
+      console.log(e.detail.body.el.components);
+      console.log(enemy);
+      if (e.detail.body.el.components.enemy != null) {
+        console.log('Hit an enemy');
+        e.detail.body.el.components.enemy.hit();
+      } 
 		});
       this.trail = null;
       var self = this;
@@ -78,7 +86,7 @@ ABLAST.registerBullet(
       });
     },
     reset: function () {
-		console.log('resetting bullet');
+		//console.log('resetting bullet');
       var el = this.el;
       el.setAttribute('scale', {x: 0.2, y: 0.2, z: 0.2});
       if (this.trail) {
@@ -135,7 +143,7 @@ ABLAST.registerBullet(
     }
   }
 );
-},{"../systems/bullet.js":14}],3:[function(require,module,exports){
+},{"../systems/bullet.js":15}],3:[function(require,module,exports){
 /* globals AFRAME ABLAST THREE */
 AFRAME.registerComponent('bullet', {
   schema: {
@@ -177,10 +185,15 @@ AFRAME.registerComponent('bullet', {
   },
 
   hitObject: function (type, data) {
-    console.log('hitObject');
+    //console.log('hitObject');
 	if(this.hit==true) return;
     this.bullet.definition.onHit.call(this);
+    //console.log("type=", type);
+    //console.log("Setting hit to true.");
     this.hit = true;
+    if (type === 'enemy') {
+      console.log('Hit enemy');
+    }
     /*if (this.data.owner === 'enemy') {
       this.el.emit('player-hit');
       document.getElementById('hurtSound').components.sound.playSound();
@@ -212,6 +225,7 @@ AFRAME.registerComponent('bullet', {
   },
 
   resetBullet: function () {
+    //console.log('resetBullet');
     this.hit = false;
     this.bullet.definition.reset.call(this);
     this.initTime = null;
@@ -229,8 +243,32 @@ AFRAME.registerComponent('bullet', {
     //var position = new THREE.Vector3();
     //var direction = new THREE.Vector3();
     return function tick (time, delta) {
+      console.log('bullet.tick');
+      // 5/13/2018: Check for collisions.
+      var collisionHelper = this.el.getAttribute('collision-helper');
+      if (!collisionHelper) { return; }
 
-      /*if (!this.initTime) {this.initTime = time;}
+      var bulletRadius = collisionHelper.radius;
+      
+      var enemies = AFPS.enemies;
+      console.log("Checking for collisions with ", enemies);
+      for (var i = 0; i < enemies.length; i++) {
+        console.log("Checking enemy ", i);
+        var enemy = enemies[i];
+        var helper = enemy.getAttribute('collision-helper');
+        if (!helper) continue;
+        var radius = helper.radius;
+        this.temps.position.copy(this.el.getAttribute('position'));
+        if (this.temps.position.distanceTo(enemy.object3D.position) < radius + bulletRadius) {
+          enemy.emit('hit');
+          this.hitObject('enemy', enemy);
+          return;
+        }
+      }
+    }
+
+      
+      /* if (!this.initTime) {this.initTime = time;}
 
       this.bullet.definition.tick.call(this, time, delta);
 
@@ -344,9 +382,8 @@ AFRAME.registerComponent('bullet', {
           }
         });
       }*/
-    };
-  })()
-});
+    })
+  });
 },{}],4:[function(require,module,exports){
 /* globals AFRAME THREE */
 AFRAME.registerComponent('collision-helper', {
@@ -393,18 +430,129 @@ AFRAME.registerComponent('collision-helper', {
 
 },{}],5:[function(require,module,exports){
 AFRAME.registerComponent('enemy', {
+    schema: {
+        'health': {type: 'int', default: 1}
+    },
     init: function() {
         var el = this.el;
-        el.addEventListener('collide', function(e) {
+        /*el.addEventListener('collide', function(e) {
             if (e.detail.body.el.id !== "ground") {
-                //console.log("I'm hit by", e.detail.body.el.id);
+                console.log(el.id + " has been hit!");
                 el.parentNode.removeChild(el);
             }
-        });
+        }); */
+    },
+
+    hit: function() {
+        
+        console.log('Calling enemy.hit');
+        var el = this.el;
+        console.log("original health:", this.data.health);
+        this.data.health--;
+        console.log("current health", this.data.health);
+        if (this.data.health <= 0) {
+            /*var sceneEl = document.querySelector('a-scene');
+            sceneEl.gameManager.targetDestroyed(this.el); */
+            this.el.emit('targetdestroyed');
+            //el.parentNode.removeChild(el);
+        }
     }
 
 });
 },{}],6:[function(require,module,exports){
+
+// Helper functions for the game-manager component.
+var GameManagerUtils = {
+    generateRandomNumber: function (min, max) {
+        return Math.floor(Math.random() * max + min);
+    },
+    chooseRandomPosition: function () {
+        // TODO
+        var xPos = GameManagerUtils.generateRandomNumber(-10, 10);
+        var yPos = 1.6;
+        // var zPos = GameManagerUtils.generateRandomNumber(-15, -30);
+        var zPos = GameManagerUtils.generateRandomNumber(-10, -12);
+        return { 'x': xPos, 'y': yPos, 'z': zPos};
+    },
+    
+    // Create a new enemy entity.
+    createEnemy: function (enemyNumber) {
+        var enemyId = "enemy" + enemyNumber.toString();
+        var newEnemy = document.createElement('a-entity');
+        newEnemy.setAttribute('gltf-model', '#ghost');
+        //newEnemy.setAttribute('cursor-listener', '');
+        newEnemy.setAttribute('enemy', {'health': 1});
+        //newEnemy.setAttribute('dynamic-body',  { 'mass': 1000});
+        //newEnemy.setAttribute('dynamic-body',  '');
+        newEnemy.setAttribute('static-body', '');
+        newEnemy.setAttribute('id', enemyId);
+        newEnemy.setAttribute('type', 'enemy');
+        // Temporarily fix position.
+        //var position = GameManagerUtils.chooseRandomPosition();
+        var position = { 'x': -10 + enemyNumber * 2, 'y': 1.8, 'z': -10};
+        var positionStr = position.x.toString() + ' ' + position.y.toString() + ' ' + position.z.toString();
+        
+        newEnemy.setAttribute('position', position);
+        //newEnemy.setAttribute('collision-helper', '');
+        var destinationStr = '0 ' + position.y.toString() + ' 0';
+        // Temporarily disable animations.
+       /*newEnemy.setAttribute('animation', { 'property': 'position',
+                                            'to': destinationStr,
+                                            'autoplay': true,
+                                            dur: 10000});
+        */
+        /*newEnemy.setAttribute('animation', { 'property': 'rotation',
+                                             'to': '0 360 0',
+                                            'autoplay': true,
+                                             'dur': 1000,
+                                            'repeat': 'indefinite'}); */
+        return newEnemy;
+    }
+};
+
+//var currentEnemy = 0;
+
+// The game-manager A-Frame component automatically 
+// generates randomly positioned enemies.
+AFRAME.registerComponent('game-manager', {
+    schema: {
+        numberEnemies: { type: 'int' },
+    },
+    init: function () {
+        console.log('game-manager.init');
+        var numEnemies = this.data['numberEnemies'];
+        //var sceneEl = document.querySelector('a-scene');
+        var sceneEl = this.el;
+        AFPS.enemies = [];
+        AFPS.score = 0;
+        for (var i = 0; i < numEnemies; i++) {
+            var enemyId = "enemy" + i.toString();
+            console.log("Creating enemy " + enemyId);
+            AFPS.enemies.push(GameManagerUtils.createEnemy(i));
+        }
+        //console.log(newEnemies);
+        //console.log(AFPS.enemies);
+        sceneEl.addEventListener('loaded', function () {
+            //newEnemies.forEach(function (enemy) {
+            var newEnemies = AFPS.enemies;
+            AFPS.enemies.forEach(function (enemy) {
+                sceneEl.appendChild(enemy);
+            });
+        });
+
+        sceneEl.addEventListener('targetdestroyed', function(e) {
+            console.log('caught targetdestroyed');
+            console.log(e);
+            var targetEl = e.target;
+            targetEl.parentNode.removeChild(targetEl);
+            AFPS.score++;
+            console.log('new score', AFPS.score);
+            this.currentEnemy++;
+        });
+    }
+});
+
+},{}],7:[function(require,module,exports){
 var WEAPONS = require('./weapon');
 
 AFRAME.registerComponent('shoot', {
@@ -524,7 +672,7 @@ AFRAME.registerComponent('shoot', {
     };
   })()
 });
-},{"./weapon":10}],7:[function(require,module,exports){
+},{"./weapon":11}],8:[function(require,module,exports){
 /* global AFRAME THREE */
 AFRAME.registerComponent('headset', {
   schema: {
@@ -587,7 +735,7 @@ AFRAME.registerComponent('headset', {
   })()
 });
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 /* globals AFRAME THREE */
 AFRAME.registerComponent('json-model', {
   schema: {
@@ -748,7 +896,7 @@ AFRAME.registerComponent('json-model', {
     }
   }
 });
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 /* global AFRAME */
 AFRAME.registerComponent('shoot-controls', {
   // dependencies: ['tracked-controls'],
@@ -820,7 +968,7 @@ AFRAME.registerComponent('shoot-controls', {
   }
 });
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // Weapon definitions.
 var WEAPONS = {
   default: {
@@ -977,13 +1125,16 @@ AFRAME.registerComponent('weapon', {
 });
 
 module.exports = WEAPONS;
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 window.ABLAST = {};
+window.AFPS = {};
+
 
 require('./a-asset-image.js');
 
 require('./components/bullet.js');
 require('./components/collision-helper.js');
+
 
 // gun.js and weapon.js are causing the Ghost models to become dark silhouettes.
 require('./components/gun.js');
@@ -1001,7 +1152,9 @@ require('./lib/poolhelper.js');
 require('./lib/utils.js');
 
 require('./systems/bullet.js');  
-},{"./a-asset-image.js":1,"./bullets/player.js":2,"./components/bullet.js":3,"./components/collision-helper.js":4,"./components/enemy.js":5,"./components/gun.js":6,"./components/headset.js":7,"./components/json-model.js":8,"./components/shoot-controls.js":9,"./components/weapon.js":10,"./lib/poolhelper.js":12,"./lib/utils.js":13,"./systems/bullet.js":14}],12:[function(require,module,exports){
+
+require('./components/game-manager.js');
+},{"./a-asset-image.js":1,"./bullets/player.js":2,"./components/bullet.js":3,"./components/collision-helper.js":4,"./components/enemy.js":5,"./components/game-manager.js":6,"./components/gun.js":7,"./components/headset.js":8,"./components/json-model.js":9,"./components/shoot-controls.js":10,"./components/weapon.js":11,"./lib/poolhelper.js":13,"./lib/utils.js":14,"./systems/bullet.js":15}],13:[function(require,module,exports){
 var createMixin = require('./utils').createMixin;
 
 var PoolHelper = function (groupName, data, sceneEl) {
@@ -1044,7 +1197,7 @@ PoolHelper.prototype = {
 };
 
 module.exports = PoolHelper;
-},{"./utils":13}],13:[function(require,module,exports){
+},{"./utils":14}],14:[function(require,module,exports){
 /* globals AFRAME */
 function createMixin (id, obj, scene) {
   var mixinEl = document.createElement('a-mixin');
@@ -1080,7 +1233,7 @@ String.prototype.pad = function (n,left, str) {
 module.exports = {
   createMixin: createMixin
 };
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /* global AFRAME ABLAST */
 var PoolHelper = require('../lib/poolhelper.js');
 
@@ -1136,4 +1289,4 @@ AFRAME.registerSystem('bullet', {
     return bullet;
   }
 });
-},{"../lib/poolhelper.js":12}]},{},[11]);
+},{"../lib/poolhelper.js":13}]},{},[12]);
