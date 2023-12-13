@@ -22,7 +22,7 @@ function createMixin (id, obj, scene) {
 
 Number.prototype.padLeft = function (n,str) {
   return Array(n-String(this).length+1).join(str||'0')+this;
-}
+}//
 
 String.prototype.pad = function (n,left, str) {
   var string = String(this).substr(0,n);
