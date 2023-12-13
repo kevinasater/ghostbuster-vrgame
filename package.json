@@ -1,6 +1,6 @@
 {
   "name": "aframe-fps",
-  "description": "A-Frame First-Person Shooter",
+  "description": "A-Frame First-Person ghost Shooter",
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
