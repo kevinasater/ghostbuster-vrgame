@@ -12,4 +12,4 @@ AFRAME.registerComponent('cursor-listener', {
       el.parentNode.removeChild(el);
     });
   }
-});
+});//
