@@ -64,4 +64,4 @@ ABLAST.registerBullet(
       this.el.setAttribute('material', 'color', '#FFF');
     }
   }
-);
+);//
