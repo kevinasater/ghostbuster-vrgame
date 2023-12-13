@@ -238,3 +238,4 @@ AFRAME.registerComponent('bullet', {
       }*/
     })
   });
+//
