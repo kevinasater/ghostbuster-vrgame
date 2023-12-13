@@ -39,8 +39,8 @@ ABLAST.registerBullet(
 			e.detail.contact;    // Stats about the collision (CANNON.ContactEquation).
 			e.detail.contact.ni; // Normal (direction) of the collision (CANNON.Vec3).
 			  
-			//setTimeout(function(){el.components.bullet.hitObject(null, null);}, 0);
-      setTimeout(function(){el.components.bullet.hitObject(e.detail.body.el['type'], null);}, 0);
+			setTimeout(function(){el.components.bullet.hitObject(null, null);}, 0);
+      //setTimeout(function(){el.components.bullet.hitObject(e.detail.body.el['type'], null);}, 0);
 			
       //console.log('reset bullet');
       var enemy = e.detail.body.el.components.enemy;

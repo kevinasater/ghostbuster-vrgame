@@ -25,6 +25,14 @@ AFRAME.registerComponent('shoot', {
       window.addEventListener('keydown', function (evt) {
         if (evt.code === 'Space' || evt.keyCode === '32') { self.shoot(); }
       });
+
+      // Add mouse move listener.
+    this.handleMouseMove = this.handleMouseMove.bind(this);
+    window.addEventListener('mousemove', this.handleMouseMove);
+
+    // Initialize rotation angles.
+    this.yaw = 0;
+    this.pitch = 0;
     }
 /*
     if (AFRAME.utils.device.isMobile())
@@ -45,7 +53,22 @@ AFRAME.registerComponent('shoot', {
       this.el.addEventListener(this.data.on, this.shoot);
     }
   },
+  handleMouseMove: function (event) {
+    // Calculate rotation angles based on mouse movement.
+    var rotationFactor = 0.002;
+    this.yaw -= event.movementX * rotationFactor;
+    this.pitch -= event.movementY * rotationFactor;
 
+    // Limit pitch to avoid camera flipping.
+    this.pitch = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.pitch));
+
+    // Update camera rotation.
+    this.el.object3D.rotation.set(this.pitch, this.yaw, 0);
+
+    
+  },
+
+   
   shoot: (function () {
     var direction = new THREE.Vector3();
     var position = new THREE.Vector3();

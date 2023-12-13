@@ -1,5 +1,12 @@
 window.ABLAST = {};
-window.AFPS = {};
+
+// Globals
+window.AFPS = {
+    gamestate: {
+        score: 0,
+        currentEnemyId: 0
+    }
+};
 
 
 require('./a-asset-image.js');

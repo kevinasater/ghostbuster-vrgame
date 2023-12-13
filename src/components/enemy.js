@@ -4,12 +4,6 @@ AFRAME.registerComponent('enemy', {
     },
     init: function() {
         var el = this.el;
-        /*el.addEventListener('collide', function(e) {
-            if (e.detail.body.el.id !== "ground") {
-                console.log(el.id + " has been hit!");
-                el.parentNode.removeChild(el);
-            }
-        }); */
     },
 
     hit: function() {
@@ -20,10 +14,7 @@ AFRAME.registerComponent('enemy', {
         this.data.health--;
         console.log("current health", this.data.health);
         if (this.data.health <= 0) {
-            /*var sceneEl = document.querySelector('a-scene');
-            sceneEl.gameManager.targetDestroyed(this.el); */
-            this.el.emit('targetdestroyed');
-            //el.parentNode.removeChild(el);
+            el.emit('targetdestroyed');
         }
     }
 

@@ -33,10 +33,10 @@ AFRAME.registerComponent('weapon', {
       document.getElementById('rightHandPivot').setAttribute('position', '-0.2 0 -0.5');
       this.el.setAttribute('shoot', {on: 'trackpaddown'});
     }
-    else {
+    /* else {
       document.getElementById('rightHandPivot').setAttribute('position', '-0.2 0 -0.5');
       this.el.setAttribute('shoot', {on: 'click'});
-    }
+    } */
   },
   init: function () {
     var el = this.el;
