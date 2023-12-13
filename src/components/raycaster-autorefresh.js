@@ -6,4 +6,4 @@ AFRAME.registerComponent('raycaster-autorefresh', {
         cursorEl.components.raycaster.refreshObjects();
       });
     }
-});
+});//
