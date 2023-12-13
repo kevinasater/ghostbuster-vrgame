@@ -21,3 +21,4 @@ AFRAME.registerElement('a-asset-image', {
     }
   })
 });
+//
