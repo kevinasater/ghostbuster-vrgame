@@ -1,4 +1,5 @@
 /* globals AFRAME THREE */
+//
 AFRAME.registerComponent('collision-helper', {
   schema: {
     type: {default: 'sphere', oneOf: ['sphere', 'box']},
