@@ -1,4 +1,5 @@
 /* global AFRAME THREE */
+//
 AFRAME.registerComponent('headset', {
   schema: {
     on: { default: 'click' }
